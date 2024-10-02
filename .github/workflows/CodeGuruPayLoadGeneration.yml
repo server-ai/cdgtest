@@ -1,0 +1,34 @@
+name: CodeGuru Specific File Analysis
+
+# Trigger the workflow manually
+on:
+  workflow_dispatch:
+
+jobs:
+  codeguru_review:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Step 2: Trigger CodeGuru Reviewer analysis for a specific file
+      - name: Trigger CodeGuru for specific file
+        run: |
+          aws codeguru-reviewer create-code-review \
+            --name specific-file-analysis \
+            --repository-association-arn arn:aws:codeguru-reviewer:us-east-1:008971672094:association:4b8922f2-0794-4a26-873e-48efdb9bfd49 \
+            --type PullRequest \
+            --file-paths src/handlers/EventHandler.py  # Specify the file you want to analyze
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      # Step 3: Fetch CodeGuru results (optional)
+      - name: Fetch CodeGuru results
+        run: |
+          aws codeguru-reviewer list-code-reviews \
+            --type PullRequest \
+            --provider-types GitHubEnterprise
+
