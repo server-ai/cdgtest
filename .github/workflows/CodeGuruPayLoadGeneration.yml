@@ -20,8 +20,8 @@ jobs:
             --name specific-file-analysis \
             --repository-association-arn arn:aws:codeguru-reviewer:us-east-1:008971672094:association:4b8922f2-0794-4a26-873e-48efdb9bfd49 \
             --type PullRequest \
-            --pull-request-commit-id ${{ 1 }} \
-            --pull-request-branch-name ${{ dev }}
+            --pull-request-commit-id ${{ "1" }} \
+            --pull-request-branch-name ${{ "dev" }}
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
