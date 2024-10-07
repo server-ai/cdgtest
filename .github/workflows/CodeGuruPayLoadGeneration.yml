@@ -24,7 +24,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      # Step 3: Trigger CodeGuru Reviewer to analyze the repository
+      # Step 3: Set up Java 11 (or 17)
+      - name: Set up Java 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'  # or '17' for Java 17
+
+      # Step bis: Trigger CodeGuru Reviewer to analyze the repository
       - name: Trigger CodeGuru Review
         run: |
           aws codeguru-reviewer create-code-review \
