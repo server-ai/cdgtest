@@ -68,7 +68,7 @@ jobs:
             exit 1
           fi
 
-          aws codeguru-reviewer get-recommendations \
+          aws codeguru-reviewer list-recommendations \
             --code-review-arn ${{ env.REVIEW_ARN }} \
             --output json > codeguru_results.json
 
