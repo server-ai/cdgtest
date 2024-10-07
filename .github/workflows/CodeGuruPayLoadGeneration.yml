@@ -49,6 +49,7 @@ jobs:
         id: get_arn
         run: |
           REVIEW_ARN=$(aws codeguru-reviewer list-code-reviews \
+            --type Pullrequest \
             --query 'codeReviews[?state==`Completed`].codeReviewArn' \
             --output text | head -n 1)
           
