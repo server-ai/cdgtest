@@ -36,20 +36,19 @@ jobs:
             --repository-association-arn arn:aws:codeguru-reviewer:us-east-1:008971672094:association:4b8922f2-0794-4a26-873e-48efdb9bfd49 \
             --type '{"RepositoryAnalysis": {"RepositoryHead": {"BranchName": "dev"}}}' \
             --region us-east-1 \
-            --debug
 
       # Step 4: Wait for CodeGuru Review to Complete
       - name: Wait for CodeGuru Review to Complete
         run: |
           echo "Waiting for CodeGuru review to complete..."
-          sleep 240
+          sleep 140
 
       # Step 5: Get the Most Recent CodeGuru Review ARN
       - name: Get the Most Recent CodeGuru Review ARN
         id: get_arn
         run: |
           REVIEW_ARN=$(aws codeguru-reviewer list-code-reviews \
-            --type PullRequest \
+            --type RepositoryAnalysis \
             --query 'codeReviews[?state==`Completed`].codeReviewArn' \
             --output text | head -n 1)
           
