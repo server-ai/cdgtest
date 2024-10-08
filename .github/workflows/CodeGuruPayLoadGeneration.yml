@@ -52,7 +52,7 @@ jobs:
             --query 'codeReviews[?state==`Completed`].codeReviewArn' \
             --output text | head -n 1)
           
-          if [ -z "$REVIEW_ARN" ]; then
+          if [ -z $REVIEW_ARN ]; then
             echo "No CodeGuru review found."
             exit 1
           fi
@@ -62,7 +62,7 @@ jobs:
       # Step 6: Fetch the CodeGuru Results
       - name: Fetch CodeGuru Results
         run: |
-          if [ -z "${{ env.REVIEW_ARN }}" ]; then
+          if [ -z ${{ env.REVIEW_ARN }} ]; then
             echo "No CodeGuru review ARN found. Exiting."
             exit 1
           fi
