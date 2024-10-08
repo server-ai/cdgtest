@@ -1,10 +1,9 @@
 permissions:
-      id-token: write   # This is required for requesting the JWT
-      contents: read 
+  id-token: write
+  contents: read
 
 name: CodeGuru Analysis and Upload Results
 
-# Manual trigger with workflow_dispatch
 on:
   workflow_dispatch:
 
@@ -35,25 +34,28 @@ jobs:
             --name specific-file-analysis_${{ github.sha }} \
             --repository-association-arn arn:aws:codeguru-reviewer:us-east-1:008971672094:association:4b8922f2-0794-4a26-873e-48efdb9bfd49 \
             --type '{"RepositoryAnalysis": {"RepositoryHead": {"BranchName": "dev"}}}' \
-            --region us-east-1 \
+            --region us-east-1
 
       # Step 4: Wait for CodeGuru Review to Complete
       - name: Wait for CodeGuru Review to Complete
         run: |
           echo "Waiting for CodeGuru review to complete..."
-          sleep 140
+          sleep 240
 
       # Step 5: Get the Most Recent CodeGuru Review ARN
       - name: Get the Most Recent CodeGuru Review ARN
         id: get_arn
         run: |
+          echo "Fetching CodeGuru Review ARN..."
           REVIEW_ARN=$(aws codeguru-reviewer list-code-reviews \
             --type RepositoryAnalysis \
             --query 'codeReviews[?state==`Completed`].codeReviewArn' \
             --output text | head -n 1)
+
+          echo "REVIEW_ARN found: $REVIEW_ARN"
           
-          if [ -z $REVIEW_ARN ]; then
-            echo "No CodeGuru review found."
+          if [ -z "$REVIEW_ARN" ]; then
+            echo "No completed CodeGuru review found."
             exit 1
           fi
 
@@ -62,8 +64,8 @@ jobs:
       # Step 6: Fetch the CodeGuru Results
       - name: Fetch CodeGuru Results
         run: |
-          if [ -z ${{ env.REVIEW_ARN }} ]; then
-            echo "No CodeGuru review ARN found. Exiting."
+          if [ -z "${{ env.REVIEW_ARN }}" ]; then
+            echo "No CodeGuru review ARN found in environment variables. Exiting."
             exit 1
           fi
 
@@ -85,10 +87,11 @@ jobs:
             exit 1
           fi
 
-      # Step 8: Upload the results to GitHub as an artifact (optional)
+      # Step 8: Upload Results as Artifact (optional)
       - name: Upload Results as Artifact
         uses: actions/upload-artifact@v4
         with:
           name: codeguru-results
           path: codeguru_results.json
+
           
